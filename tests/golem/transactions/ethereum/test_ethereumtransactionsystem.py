@@ -71,12 +71,11 @@ class TestEthereumTransactionSystem(TestWithDatabase, LogTestCase, testutils.PEP
             self.testnet = True
 
         with patch(pkg + 'paymentprocessor.PaymentProcessor.start'), \
-            patch(pkg + 'paymentprocessor.PaymentProcessor.stop'), \
-            patch(pkg + 'node.NodeProcess.start'), \
-            patch(pkg + 'node.NodeProcess.stop'), \
-            patch(pkg + 'node.NodeProcess.__init__', init), \
-            patch(pkg + 'node.NodeProcess.system_geth', False, create=True), \
-            patch('web3.providers.rpc.HTTPProvider.__init__', init):
+                patch(pkg + 'paymentprocessor.PaymentProcessor.stop'), \
+                patch(pkg + 'node.NodeProcess.start'), \
+                patch(pkg + 'node.NodeProcess.stop'), \
+                patch(pkg + 'node.NodeProcess.__init__', init), \
+                patch('web3.providers.rpc.HTTPProvider.__init__', init):
 
             e = EthereumTransactionSystem(self.tempdir, PRIV_KEY)
 

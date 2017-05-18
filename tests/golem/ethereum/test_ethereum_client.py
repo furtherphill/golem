@@ -17,8 +17,7 @@ class EthereumClientTest(TempDirFixture):
         logging.basicConfig(level=logging.INFO)
         self.manage_client = not is_geth_listening(NodeProcess.testnet)
 
-        with patch('golem.ethereum.node.NodeProcess.save_static_nodes'):
-            self.client = Client(self.tempdir)
+        self.client = Client(self.tempdir)
 
     def tearDown(self):
         if self.manage_client:
