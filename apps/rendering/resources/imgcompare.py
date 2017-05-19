@@ -1,8 +1,8 @@
 import logging
 import math
 
-from apps.rendering.resources.imgrepr import (EXRImgRepr, ImgRepr, load_img,
-                                              PILImgRepr)
+from apps.rendering.resources.imgrepr import (crop_to_imgrepr, EXRImgRepr,
+                                              ImgRepr, load_img, PILImgRepr)
 
 logger = logging.getLogger("apps.rendering")
 
@@ -37,19 +37,24 @@ def calculate_mse(img1, img2):
                    (g1 - g2) * (g1 - g2) + \
                    (b1 - b2) * (b1 - b2)
 
+
+
     if res_x <= 0 or res_y <= 0:
         raise ValueError("Image or box resolution must be greater than 0")
     mse /= res_x * res_y * 3
+
+
+    print "MESE {}".format(mse)
     return mse
 
 
 def compare_imgs(img1, img2, max_col=255):
     mse = calculate_mse(img1, img2)
-    logger.debug("MSE = {}".format(mse))
+    logger.error("MSE = {}".format(mse))
     if mse == 0:
         return True
     psnr = calculate_psnr(mse, max_col)
-    logger.debug("PSNR = {}".format(psnr))
+    logger.error("PSNR = {}".format(psnr))
     return psnr >= PSNR_ACCEPTABLE_MIN
 
 
@@ -100,10 +105,13 @@ def advance_verify_img(file_, res_x, res_y, start_box, box_size, compare_file,
                          "{}".format(box_size))
             return
 
+        print(cmp_img.get_size())
+
         if box_size != img.get_size():
             img = crop_to_imgrepr(img, start_box, box_size)
         if box_size != cmp_img.get_size():
-            cmp_img = crop_to_imgrepr(cmp_img, cmp_start_box, box_size)
+            cmp_img_down = crop_to_imgrepr(cmp_img, cmp_start_box, box_size)
+            cmp_img_up = crop_to_imgrepr(cmp_img, cmp_starf)
 
         if isinstance(img, PILImgRepr) and isinstance(cmp_img, PILImgRepr):
             return compare_imgs(img, cmp_img)
@@ -113,10 +121,3 @@ def advance_verify_img(file_, res_x, res_y, start_box, box_size, compare_file,
         logger.exception("Cannot verify images {} and {}".format(file_,
                                                                  compare_file))
         return False
-
-
-def crop_to_imgrepr(img_repr, start_box, box_size):
-    cropped_img = img_repr.crop(start_box, box_size)
-    img_repr = PILImgRepr()
-    img_repr.img = cropped_img
-    return img_repr

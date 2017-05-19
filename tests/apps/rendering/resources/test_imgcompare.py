@@ -8,9 +8,9 @@ from apps.rendering.resources.imgcompare import (advance_verify_img,
                                                  compare_imgs,
                                                  compare_pil_imgs,
                                                  calculate_mse,
-                                                 calculate_psnr, logger,
-                                                 crop_to_imgrepr)
-from apps.rendering.resources.imgrepr import load_img, PILImgRepr
+                                                 calculate_psnr, logger)
+from apps.rendering.resources.imgrepr import (crop_to_imgrepr, load_img,
+                                              PILImgRepr)
 
 from golem.testutils import PEP8MixIn, TempDirFixture
 from golem.tools.assertlogs import LogTestCase
